@@ -4,17 +4,22 @@ import firebaseConfig from "./shared/firebase/firebaseConfig";
 import { ref, getDatabase } from "firebase/database";
 import { useObject } from "react-firebase-hooks/database";
 import Tanque from "./shared/firebase/componentes/tanque/Tanque";
-import { Box, Paper, SxProps } from "@mui/material";
+import { Box, Paper, SxProps, Typography } from "@mui/material";
 import Painel from "./shared/firebase/componentes/painel/Painel";
 
 const estiloHome: SxProps = {
   fontFamily: "Roboto",
-  height: "100vh",
+  height: "calc(100vh - 16px)",
   width: "100vw",
   backgroundColor: "#f2f2f2",
+  paddingTop: "16px",
+};
+
+const estiloContainerCards: SxProps = {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-around",
+  marginTop: "32px",
 };
 
 function App() {
@@ -28,8 +33,15 @@ function App() {
 
   return (
     <Box sx={estiloHome}>
-      <Tanque />
-      <Painel />
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Typography sx={{ margin: "auto" }} variant="h4">
+          PSE - Controle de nível de tanque
+        </Typography>
+      </Box>
+      <Box sx={estiloContainerCards}>
+        <Tanque />
+        <Painel />
+      </Box>
     </Box>
   );
 }
