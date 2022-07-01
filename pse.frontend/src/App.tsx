@@ -15,7 +15,7 @@ import Painel from "./shared/firebase/componentes/painel/Painel";
 
 const estiloHome: SxProps = {
   fontFamily: "Roboto",
-  height: "calc(100% - 16px)",
+  height: "100%",
   width: "100vw",
   backgroundColor: "#f2f2f2",
   paddingTop: "16px",
