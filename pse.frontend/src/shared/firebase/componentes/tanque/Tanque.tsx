@@ -1,4 +1,11 @@
-import { Box, Paper, SxProps, Typography } from "@mui/material";
+import {
+  Box,
+  Paper,
+  SxProps,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { getApp } from "firebase/app";
 import { getDatabase, ref } from "firebase/database";
 import { useObject, useObjectVal } from "react-firebase-hooks/database";
@@ -16,6 +23,12 @@ const estiloTanque: SxProps = {
   height: "50vh",
 };
 
+const estiloTanqueMobile: SxProps = {
+  width: "90vw",
+  height: "50vh",
+  marginBottom: "32px"
+};
+
 const containerTexto: SxProps = {
   display: "flex",
   flexDirection: "column",
@@ -28,23 +41,31 @@ const containerInformacao: SxProps = {
 
 const Tanque = () => {
   const database = getDatabase(getApp());
+  const theme = useTheme();
+  const telaPequena = useMediaQuery(theme.breakpoints.down("sm"));
   const [dado] = useObjectVal<DadosTanque>(ref(database, "informacoesTanque"));
 
   return (
-    <Paper sx={estiloTanque}>
+    <Paper sx={telaPequena ? estiloTanqueMobile : estiloTanque}>
       <GraficoTanque altura={dado?.altura || 0} />
       <Box sx={containerTexto}>
         <Box sx={containerInformacao}>
           <Typography sx={{ marginRight: "4px" }}>
             Válvula de entrada:
           </Typography>
-          <Typography fontWeight={700} color={dado?.valvulaEntrada ? "#66bb6a" : "#ef5350"}>
+          <Typography
+            fontWeight={700}
+            color={dado?.valvulaEntrada ? "#66bb6a" : "#ef5350"}
+          >
             {dado?.valvulaEntrada ? "LIGADA" : "DESLIGADA"}
           </Typography>
         </Box>
         <Box sx={containerInformacao}>
           <Typography sx={{ marginRight: "4px" }}>Válvula de saída:</Typography>
-          <Typography fontWeight={700} color={dado?.valvulaSaida ? "#66bb6a" : "#ef5350"}>
+          <Typography
+            fontWeight={700}
+            color={dado?.valvulaSaida ? "#66bb6a" : "#ef5350"}
+          >
             {dado?.valvulaSaida ? "LIGADA" : "DESLIGADA"}
           </Typography>
         </Box>

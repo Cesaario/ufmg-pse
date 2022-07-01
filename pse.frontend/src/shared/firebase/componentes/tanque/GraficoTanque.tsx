@@ -22,7 +22,7 @@ const GraficoTanque = ({ altura }: { altura: number }) => {
           left: "50%",
           transform: "translate(-50%, -50%)",
         }}
-        fontSize={10}
+        fontSize={16}
       >
         Nível de líquido
       </Typography>
