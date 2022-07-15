@@ -47,7 +47,6 @@ const Painel = () => {
         <Tab label="Controle" value={0} />
         <Tab label="Gráfico" value={1} />
         <Tab label="Alarmes" value={2} />
-        <Tab label="Calibração" value={3} />
       </Tabs>
       <Aba />
     </Paper>
