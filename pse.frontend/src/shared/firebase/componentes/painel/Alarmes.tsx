@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { getApp } from "firebase/app";
 import { getDatabase, ref } from "firebase/database";
-import { useObjectVal } from "react-firebase-hooks/database";
+import { useObject, useObjectVal } from "react-firebase-hooks/database";
 
 const estiloPainel: SxProps = {
   display: "flex",
@@ -36,7 +36,7 @@ const estiloContainerGrafico: SxProps = {
 
 interface Alarme {
   tipo: string;
-  dataHora: string;
+  dataHora: number;
 }
 
 const Alarmes = () => {
@@ -44,7 +44,9 @@ const Alarmes = () => {
   const telaPequena = useMediaQuery(theme.breakpoints.down("sm"));
 
   const database = getDatabase(getApp());
-  const [dados] = useObjectVal<Alarme[]>(ref(database, "alarmes"));
+  const [dados] = useObject(ref(database, "alarmes"));
+
+  const alarmes = Object.values(dados?.val()) as Alarme[];
 
   return (
     <Box sx={telaPequena ? estiloPainelMobile : estiloPainel}>
@@ -59,7 +61,7 @@ const Alarmes = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {dados?.map((row) => (
+              {alarmes?.map((row) => (
                 <TableRow
                   key={row.dataHora}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

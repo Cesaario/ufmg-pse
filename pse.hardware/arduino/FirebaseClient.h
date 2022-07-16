@@ -23,7 +23,8 @@ class FirebaseClient {
     void UpdateFieldDouble(String field, double value);
     void UpdateFieldBoolean(String field, bool value);
     void UpdateTimestamp();
-    void SetStreamCallbacks(void(*CallbackFunction)(MultiPathStream), String id);
+    void SetStreamCallbacks(void(*CallbackFunction)(MultiPathStream));
+    void GerarAlarme(String tipo);
 };
 
 #endif

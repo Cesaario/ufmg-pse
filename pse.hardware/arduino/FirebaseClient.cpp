@@ -43,9 +43,8 @@ void FirebaseClient::FirebaseInit(Network *networkInstance) {
     Firebase.reconnectWiFi(true);
 }
 
-void FirebaseClient::SetStreamCallbacks(
-  void (*CallbackFunction)(MultiPathStream), String id) {
-  String fullPath = PATH_MODULOS + "/" + id;
+void FirebaseClient::SetStreamCallbacks(void (*CallbackFunction)(MultiPathStream)) {
+  String fullPath = "/";
 
   if (!Firebase.RTDB.beginMultiPathStream(&firebaseStream, fullPath))
     Serial.printf("[Firebase] Erro ao iniciar stream, %s\n\n",
@@ -78,6 +77,15 @@ void FirebaseClient::UpdateFieldDouble(String field, double value) {
 void FirebaseClient::UpdateFieldBoolean(String field, bool value) {
   String fullPath = field;
   FirebaseClient::UpdateRTDBField(fullPath, value);
+}
+
+void FirebaseClient::GerarAlarme(String tipo) {
+  FirebaseJson json;
+  FirebaseJson jsonTimestamp;
+  jsonTimestamp.set(".sv", "timestamp");
+  json.add("tipo", tipo);
+  json.add("dataHora", jsonTimestamp);
+  Firebase.RTDB.pushJSON(&firebaseData, "/alarmes", &json);
 }
 
 bool FirebaseClient::CheckFirebaseReady() {
