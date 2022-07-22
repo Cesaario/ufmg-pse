@@ -25,6 +25,7 @@ class FirebaseClient {
     void UpdateTimestamp();
     void SetStreamCallbacks(void(*CallbackFunction)(MultiPathStream));
     void GerarAlarme(String tipo);
+    void GerarDadoGrafico(float valor);
 };
 
 #endif

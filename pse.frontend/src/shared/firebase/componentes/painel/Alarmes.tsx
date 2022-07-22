@@ -46,7 +46,7 @@ const Alarmes = () => {
   const database = getDatabase(getApp());
   const [dados] = useObject(ref(database, "alarmes"));
 
-  const alarmes = Object.values(dados?.val()) as Alarme[];
+  const alarmes = Object.values(dados?.val() || []) as Alarme[];
 
   return (
     <Box sx={telaPequena ? estiloPainelMobile : estiloPainel}>
@@ -69,7 +69,7 @@ const Alarmes = () => {
                   <TableCell component="th" scope="row">
                     {row.tipo}
                   </TableCell>
-                  <TableCell align="right">{`Alarme do tipo ${row.tipo}`}</TableCell>
+                  <TableCell align="right">{row.tipo === "AL01" ? "Alarme de nível alto" : "Alarme de nível baixo"}</TableCell>
                   <TableCell align="right">
                     {`${new Date(row.dataHora).toLocaleDateString()} ${new Date(
                       row.dataHora

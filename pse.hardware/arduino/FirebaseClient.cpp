@@ -88,6 +88,15 @@ void FirebaseClient::GerarAlarme(String tipo) {
   Firebase.RTDB.pushJSON(&firebaseData, "/alarmes", &json);
 }
 
+void FirebaseClient::GerarDadoGrafico(float valor) {
+  FirebaseJson json;
+  FirebaseJson jsonTimestamp;
+  jsonTimestamp.set(".sv", "timestamp");
+  json.add("valor", valor * 100);
+  json.add("dataHora", jsonTimestamp);
+  Firebase.RTDB.pushJSON(&firebaseData, "/historicoTanque", &json);
+}
+
 bool FirebaseClient::CheckFirebaseReady() {
   return Firebase.ready();
 }

@@ -1,7 +1,7 @@
 import { SxProps, Box, useMediaQuery, useTheme } from "@mui/material";
 import { getApp } from "firebase/app";
 import { getDatabase, ref } from "firebase/database";
-import { useObjectVal } from "react-firebase-hooks/database";
+import { useObject, useObjectVal } from "react-firebase-hooks/database";
 import {
   CartesianGrid,
   LineChart,
@@ -43,9 +43,9 @@ const Grafico = () => {
   const telaPequena = useMediaQuery(theme.breakpoints.down("sm"));
 
   const database = getDatabase(getApp());
-  const [dados] = useObjectVal<DadoHistorico[]>(
-    ref(database, "historicoTanque")
-  );
+  const [dados] = useObject(ref(database, "historicoTanque"));
+
+  const dadosGrafico = Object.values(dados?.val() || []) as DadoHistorico[];
 
   const formatarStringParaHorario = (dataString: string) => {
     const data = new Date(dataString);
@@ -59,7 +59,7 @@ const Grafico = () => {
           <LineChart
             width={730}
             height={250}
-            data={dados?.slice(-30) || []}
+            data={dadosGrafico?.slice(-30) || []}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -67,10 +67,14 @@ const Grafico = () => {
               dataKey="dataHora"
               tickFormatter={formatarStringParaHorario}
             />
-            <YAxis domain={[0, 100]} />
+            <YAxis
+              allowDataOverflow
+              domain={[0, 100]}
+              tickFormatter={(valor) => valor.toFixed(1)}
+            />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="valor" stroke="#388e3c" />
+            <Line type="monotone" dataKey="valor" stroke="#388e3c" isAnimationActive={false} />
           </LineChart>
         </ResponsiveContainer>
       </Box>

@@ -1,7 +1,7 @@
 #include "Network.h"
 #include <WiFi.h>
 
-#define WIFI_SSID "VIVOFIBRA-46D8-INT"
+#define WIFI_SSID "VIVOFIBRA-46D8"
 #define WIFI_PASSWORD "14CFB7A82B"
 
 static Network *instance = NULL;
