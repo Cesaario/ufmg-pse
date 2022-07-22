@@ -1,8 +1,10 @@
 #include "Network.h"
 #include <WiFi.h>
 
-#define WIFI_SSID "VIVOFIBRA-46D8"
-#define WIFI_PASSWORD "14CFB7A82B"
+//#define WIFI_SSID "VIVOFIBRA-46D8"
+//#define WIFI_PASSWORD "14CFB7A82B"
+#define WIFI_SSID "AndroidGustavo"
+#define WIFI_PASSWORD "bolobolobolo"
 
 static Network *instance = NULL;
 Network::Network() {
