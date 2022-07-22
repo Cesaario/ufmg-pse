@@ -16,7 +16,7 @@ FirebaseClient *firebaseClient;
 Ultrasonic ultrasonic(PINO_SENSOR_TRIG, PINO_SENSOR_ECHO);
 
 int contadorGeracaoDadoGrafico = 0;
-int limiteContadorGeracaoDadoGrafico = 10;
+int limiteContadorGeracaoDadoGrafico = 60;
 
 int cooldownRotinaAlarmes = 0;
 
@@ -82,10 +82,10 @@ void setup() {
   pinMode(PINO_SENSOR_ECHO, INPUT);
   pinMode(PINO_SENSOR_TRIG, OUTPUT);
 
-  
+
   digitalWrite(PINO_SOLENOIDE, HIGH);
   digitalWrite(PINO_BOMBA, HIGH);
-  
+
   xTaskCreatePinnedToCore(ModuleTask, "ModuleTask", 10240, NULL, 4, NULL,
                           tskNO_AFFINITY);
 }
@@ -98,48 +98,37 @@ void StreamCallback(MultiPathStream stream) {
   // Você pode checar o caminho de onde veio a alteração com stream.get("caminho")
   // O valor alterado pode ser acessado com stream.value
   Serial.println("CALLBACK!!!");
-  Serial.println(stream.value);
-  
-  if (stream.get("controle/modo"))
+  Serial.println(stream.type.c_str());
+  Serial.println(stream.eventType.c_str());
+  Serial.println(stream.dataPath.c_str());
+  Serial.println(stream.value.c_str());
+
+  if (stream.get("modo"))
     modoAutomatico = stream.value == "automatico";
-  if (stream.get("controle/statusEntrada"))
+  if (stream.get("statusEntrada"))
     statusBombaManual = StringToBool(stream.value);
-  if (stream.get("controle/statusSaida"))
+  if (stream.get("statusSaida"))
     statusSolenoideManual = StringToBool(stream.value);
-  if (stream.get("controle/nivelIdealAlto"))
+  if (stream.get("nivelIdealAlto"))
     nivelIdealAlto = StringToFloat(stream.value) / 100.0;
-  if (stream.get("controle/nivelIdealBaixo"))
+  if (stream.get("nivelIdealBaixo"))
     nivelIdealBaixo = StringToFloat(stream.value) / 100.0;
-  if (stream.get("controle/nivelSeguroAlto"))
+  if (stream.get("nivelSeguroAlto"))
     nivelSeguroAlto = StringToFloat(stream.value) / 100.0;
-  if (stream.get("controle/nivelSeguroBaixo"))
+  if (stream.get("nivelSeguroBaixo"))
     nivelSeguroBaixo = StringToFloat(stream.value) / 100.0;
   if (stream.get("auxiliar/alturaMinima"))
     alturaMinima = StringToFloat(stream.value);
-  if (stream.get("auxiliar/alturaMaxima")) 
+  if (stream.get("auxiliar/alturaMaxima"))
     alturaMaxima = StringToFloat(stream.value);
-  
+
 }
 
-// Nosso void loop
-// Delay padrão de 1s (pode ser alterado acima)
 void rotinaPrincipal() {
   Serial.println("ROTINA!");
   rotinaLeituraNivel();
   rotinaAcionamentoAtuadores();
   rotinaAlarmes();
-
-  /*
-    Gerar Alarme
-    firebaseClient->GerarAlarme("AL01");
-
-    Setar Boolean
-    firebaseClient->UpdateFieldBoolean("informacoesTanque/valvulaEntrada", true);
-
-    Setar Double
-    firebaseClient->UpdateFieldDouble("informacoesTanque/altura", 0.7);
-  */
-
 }
 
 void rotinaLeituraNivel() {
@@ -158,7 +147,7 @@ void rotinaLeituraNivel() {
 void rotinaAcionamentoAtuadores() {
 
   // Todos os digitalWrites estão com ! para inverter o valor mesmo. Aparentemente é assim que o relé funciona.
-  
+
   if (modoAutomatico) {
     if (porcentagemAltura < nivelIdealBaixo) {
       digitalWrite(PINO_BOMBA, !HIGH);
@@ -186,7 +175,6 @@ void rotinaAlarmes() {
 
   if (cooldownRotinaAlarmes-- > 0)
     return;
-
 
   boolean alarmeGerado = false;
   if (porcentagemAltura > nivelSeguroAlto) {

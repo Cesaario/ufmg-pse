@@ -19,7 +19,7 @@ FirebaseClient::FirebaseClient() {
 }
 
 void FirestoreTokenStatusCallback(TokenInfo info) {
-  Serial.printf("[Firebase] Token callback!\n");
+  Serial.printf("[Firebase] Token: %s\n", getTokenStatus(info));
 }
 
 void StreamTimeoutCallback(bool timeout) {
@@ -41,10 +41,12 @@ void FirebaseClient::FirebaseInit(Network *networkInstance) {
     Serial.println("[Firebase] Iniciando...");
     Firebase.begin(&firebaseConfig, &firebaseAuth);
     Firebase.reconnectWiFi(true);
+
+    firebaseData.setResponseSize(16384);
 }
 
 void FirebaseClient::SetStreamCallbacks(void (*CallbackFunction)(MultiPathStream)) {
-  String fullPath = "/";
+  String fullPath = "controle/";
 
   if (!Firebase.RTDB.beginMultiPathStream(&firebaseStream, fullPath))
     Serial.printf("[Firebase] Erro ao iniciar stream, %s\n\n",
